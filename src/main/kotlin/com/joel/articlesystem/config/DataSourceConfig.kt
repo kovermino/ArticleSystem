@@ -24,6 +24,7 @@ class DataSourceConfig {
             idleTimeout = 30000
             connectionTimeout = 20000
             isRegisterMbeans = false
+            isAutoCommit = false
         }
         return HikariDataSource(config)
     }
