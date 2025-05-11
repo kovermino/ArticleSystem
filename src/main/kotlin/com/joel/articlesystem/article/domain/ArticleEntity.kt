@@ -2,7 +2,6 @@ package com.joel.articlesystem.article.domain
 
 import com.joel.articlesystem.journal.domain.JournalEntity
 import jakarta.persistence.*
-import java.time.LocalDate
 import java.time.ZonedDateTime
 
 @Entity
@@ -11,17 +10,19 @@ data class ArticleEntity(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "mk")
-        val id: Int,
+        val id: Int? = null,
         @Column(name = "content_id")
-        val source: String,
-        val title: String,
+        val source: String?,
+        val title: String?,
         @Column(name = "abstract")
-        val abstracts: String,
+        val abstracts: String?,
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "jid")
-        val journalEntity: JournalEntity,
+        val journalEntity: JournalEntity?,
         val aCode: String? = null,
-        val doi: String? = null
+        val doi: String? = null,
+        @Column(name = "indexed_at")
+        var indexedAt: ZonedDateTime? = null
 
 //        @Column(name = "c_type")
 //        val articleType: String? = null,
@@ -100,7 +101,5 @@ data class ArticleEntity(
 //
 //        val oaYn: String? = null,
 //
-//        @Column(name = "indexed_at")
-//        var indexedAt: ZonedDateTime? = null
 ) {
 }

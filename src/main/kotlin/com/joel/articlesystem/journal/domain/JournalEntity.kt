@@ -10,7 +10,8 @@ data class JournalEntity(
         @Column(name = "jid")
         val id: Int,
         @Column(name = "journal_type")
-        val type: String,
+        @Enumerated(EnumType.STRING)
+        val type: JournalType,
         @Column(name = "journal")
         val title: String,
         @Column(name = "jo_publisher")
