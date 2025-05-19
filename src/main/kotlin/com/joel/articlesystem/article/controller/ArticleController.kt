@@ -1,6 +1,6 @@
 package com.joel.articlesystem.article.controller
 
-import com.joel.articlesystem.article.domain.ArticleDBVO
+import com.joel.articlesystem.article.repository.rdb.dbvo.ArticleDBVO
 import com.joel.articlesystem.article.domain.ArticleDTO
 import com.joel.articlesystem.article.service.ArticleService
 import org.springframework.web.bind.annotation.GetMapping

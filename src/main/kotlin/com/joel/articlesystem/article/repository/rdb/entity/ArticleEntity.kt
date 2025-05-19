@@ -1,4 +1,4 @@
-package com.joel.articlesystem.article.domain
+package com.joel.articlesystem.article.repository.rdb.entity
 
 import com.joel.articlesystem.journal.domain.JournalEntity
 import jakarta.persistence.*

@@ -1,9 +1,9 @@
 package com.joel.articlesystem.article.service
 
-import com.joel.articlesystem.article.domain.ArticleDBVO
+import com.joel.articlesystem.article.repository.rdb.dbvo.ArticleDBVO
 import com.joel.articlesystem.article.domain.ArticleDTO
-import com.joel.articlesystem.article.repository.JpaArticleRepository
-import com.joel.articlesystem.article.repository.QueryDslArticleRepository
+import com.joel.articlesystem.article.repository.rdb.JpaArticleRepository
+import com.joel.articlesystem.article.repository.rdb.QueryDslArticleRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

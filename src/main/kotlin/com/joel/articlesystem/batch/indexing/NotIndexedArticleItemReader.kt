@@ -1,45 +1,63 @@
 package com.joel.articlesystem.batch.indexing
 
-import com.joel.articlesystem.article.domain.ArticleEntity
-import com.joel.articlesystem.article.domain.QArticleEntity
+import com.joel.articlesystem.article.repository.rdb.dbvo.ArticleIndexedAtDBVO
+import com.joel.articlesystem.article.repository.rdb.entity.QArticleEntity
+import com.querydsl.core.types.Projections
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.batch.item.ItemReader
 
 class NotIndexedArticleItemReader(
     private val queryFactory: JPAQueryFactory,
-    private val pageSize: Int = 1000
-) : ItemReader<ArticleEntity> {
+    private val pageSize: Int = 10000
+) : ItemReader<Int> {
+    private var currentId: Int = 80000000;
+    private var lastId: Int? = 0;
+    private var buffer: Iterator<Int> = emptyList<Int>().iterator()
 
-    private var lastId: Int = 0;
-    private var buffer: Iterator<ArticleEntity> = emptyList<ArticleEntity>().iterator()
+    init {
+        val qArticle = QArticleEntity.articleEntity
+        lastId = queryFactory
+            .select(qArticle.id.max())
+            .from(qArticle)
+            .fetchOne()
+        println("Max mk: $lastId")
+    }
 
-    override fun read(): ArticleEntity? {
-        if(!buffer.hasNext()) {
+    override fun read(): Int? {
+        while(!buffer.hasNext()) {
             buffer = fetchNextChunk()
-            if(!buffer.hasNext()) {
+            if(currentId >= lastId!!) {
                 return null
             }
         }
         return buffer.next()
     }
 
-    private fun fetchNextChunk(): Iterator<ArticleEntity> {
+    private fun fetchNextChunk(): Iterator<Int> {
         val qArticle = QArticleEntity.articleEntity
 
-        val articles = queryFactory
-            .selectFrom(qArticle)
+        val articlesInRange = queryFactory
+            .select(
+                Projections.fields(
+                    ArticleIndexedAtDBVO::class.java,
+                    qArticle.id,
+                    qArticle.indexedAt
+                )
+            )
+            .from(qArticle)
             .where(
-                qArticle.indexedAt.isNull,
-                qArticle.id.gt(lastId)
+                qArticle.id.gt(currentId)
             )
             .orderBy(qArticle.id.asc())
             .limit(pageSize.toLong())
             .fetch()
 
-        if(articles.isNotEmpty()) {
-            lastId = articles.last().id!!
+        if(articlesInRange.isNotEmpty()) {
+            println("currentId: $currentId")
+            currentId = articlesInRange.last().id!!
         }
 
-        return articles.iterator()
+        val notIndexedArticles = articlesInRange.filter { it.indexedAt == null }.map { it.id }
+        return notIndexedArticles.iterator()
     }
 }

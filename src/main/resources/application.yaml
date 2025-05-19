@@ -1,4 +1,6 @@
 spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.batch.BatchAutoConfiguration
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DATABASE_URL}
@@ -37,3 +39,5 @@ spring:
           fetch_size: 50
         connection:
           provider_disables_autocommit: true
+solr:
+  url: ${SOLR_URL}
